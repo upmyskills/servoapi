@@ -11,22 +11,26 @@ const serv = window.location.origin;
 console.log(serv);
 
 const load = async () => {
-  const response = await fetch(`${serv}/pseudoserver/menu.json`);
-  const data = await response.json();
-
-  data.menuItems.forEach((item: { linkName: string, cards: Array<{ word: string, translation: string, audioSrc: string }> }) => {
-    item.cards.map((card) => {
-      statka.set(card.word, {
-        word: card.word,
-        translation: card.translation,
-        audioSrc: card.audioSrc,
-        count: Math.floor(Math.random() * 44),
-        correct: Math.floor(Math.random() * 25),
-        wrong: Math.floor(Math.random() * 21)
+  try {
+    const response = await fetch(`${serv}/pseudoserver/menu.json`);
+    const data = await response.json();
+    data.menuItems.forEach((item: { linkName: string, cards: Array<{ word: string, translation: string, audioSrc: string }> }) => {
+      item.cards.map((card) => {
+        statka.set(card.word, {
+          word: card.word,
+          translation: card.translation,
+          audioSrc: card.audioSrc,
+          count: Math.floor(Math.random() * 44),
+          correct: Math.floor(Math.random() * 25),
+          wrong: Math.floor(Math.random() * 21)
+        });
+        return card;
       });
-      return card;
     });
-  });
+  } catch (e) {
+    console.log("error:", e);
+  }
+
 };
 load();
 
