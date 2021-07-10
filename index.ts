@@ -7,8 +7,10 @@ import fetch from 'node-fetch';
 
 import { statka } from './routes/const';
 
+const serv = global.location.origin;
+
 const load = async () => {
-  const response = await fetch('http://localhost:3001/pseudoserver/menu.json');
+  const response = await fetch(`${serv}/pseudoserver/menu.json`);
   const data = await response.json();
 
   data.menuItems.forEach((item: { linkName: string, cards: Array<{ word: string, translation: string, audioSrc: string }> }) => {
