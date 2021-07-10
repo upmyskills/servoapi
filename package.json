@@ -23,13 +23,13 @@
     "http-errors": "^1.8.0",
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.12",
-    "ts-node": "^10.1.0"
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
   },
   "devDependencies": {
     "@types/config": "0.0.39",
     "@types/cors": "^2.8.12",
     "@types/http-errors": "^1.8.1",
-    "@types/node-fetch": "^2.5.11",
-    "typescript": "^4.3.5"
+    "@types/node-fetch": "^2.5.11"
   }
 }
