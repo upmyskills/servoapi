@@ -7,7 +7,8 @@ import fetch from 'node-fetch';
 
 import { statka } from './routes/const';
 
-const serv = global.location.origin;
+const serv = window.location.origin;
+console.log(serv);
 
 const load = async () => {
   const response = await fetch(`${serv}/pseudoserver/menu.json`);
