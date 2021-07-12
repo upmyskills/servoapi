@@ -3,7 +3,7 @@
 import config from 'config';
 import { app } from '../app';
 
-const debug = require('debug')('english-for-kids:server');
+import { debug } from 'debug';
 import http from 'http';
 
 /**
@@ -11,6 +11,7 @@ import http from 'http';
  */
 var port = normalizePort(process.env.PORT || config.get('serverConf.localport'));
 app.set('port', port);
+debug('API:EFK:server::');
 
 /**
  * Get connection to DataBase
