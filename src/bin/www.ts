@@ -5,7 +5,7 @@ import { app } from '../app';
 
 import { debug } from 'debug';
 import mongoose from 'mongoose';
-import { MongoClient } from 'mongodb';
+// import { MongoClient } from 'mongodb';
 import http from 'http';
 
 /**
@@ -31,48 +31,18 @@ debug('API:EFK:server::');
 
 
 // MONGOOSE
-const mongoDB = 'mongodb+srv://monomin:5ewMHtFIBPV1qs6i@azuremongodb.t8m5v.mongodb.net/englishwords_db?retryWrites=true&w=majority';
+const dbURL = config.get('dbConf.dbURL');
+const dbUser = config.get('dbConf.dbUser');
+const dbPass = config.get('dbConf.dbPass');
+
+const mongoDB = `mongodb+srv://${dbUser}:${dbPass}@${dbURL}?retryWrites=true&w=majority`;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise = global.Promise;
 const db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'MongoDB connection error.'));
 db.once('open', () => console.log('GOOD!'));
-
-const categorySchema = new mongoose.Schema({
-  caption: {type: String, require: true, unique: true},
-});
-
-const wordSchema = new mongoose.Schema({
-  word: String,
-  translation: String,
-  audioSrc: Buffer,
-  image: Buffer,
-  category: { type: mongoose.Schema.Types.ObjectId, ref: 'animals' }
-});
-
-const Category = mongoose.model('category', categorySchema);
-Category.createCollection();
-
-const Word = mongoose.model('word', wordSchema);
-Word.createCollection();
-
-// const animals = new Category({ caption: 'animals'});
-// Category.create({ caption: 'animals' }, (err, obj) => console.log(err, obj));
-
-const wordFrog = new Word({
-  word: 'frog',
-  translation: 'лягушка',
-  audioSrc: 'pathToMP3',
-  image: 'pathToImage',
-});
-wordFrog.save((err: mongoose.CallbackError) => console.log(err))
-
-const category = Category.find({ caption: 'animals', });
-console.log(category);
 // connectToDB();
-
-
 
 /**
  * Create HTTP server.

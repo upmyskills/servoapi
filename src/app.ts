@@ -1,13 +1,16 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import config from 'config';
 import createError, { HttpError } from 'http-errors';
 import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
 
+import { pageRouter } from './routes/pageRoutes';
 import { baseRoute } from './routes/cardsroutes';
-import { ICard } from './models';
+import { dbRouter } from './routes/dbCategoryRoutes';
 
+import { ICard } from './models';
 import { statistic } from './shared/constants';
 
 interface IStandartCard {
@@ -38,13 +41,12 @@ const load = async () => {
 load();
 
 export const app = express();
-const port = config.get('serverConf.localport');
-
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
 
-// app.use(express.json({ extended: true }));
+app.use(express.json());
+// app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -66,6 +68,8 @@ app.use(cors());
 
 // ROUTES
 app.use(baseRoute);
+app.use(dbRouter);
+app.use(pageRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

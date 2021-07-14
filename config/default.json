@@ -1,5 +1,10 @@
 {
   "serverConf": {
     "localport": "3001"
+  },
+  "dbConf": {
+    "dbURL": "azuremongodb.t8m5v.mongodb.net/englishwords_db",
+    "dbUser": "monomin",
+    "dbPass": "5ewMHtFIBPV1qs6i"
   }
 }
