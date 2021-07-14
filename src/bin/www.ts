@@ -4,6 +4,8 @@ import config from 'config';
 import { app } from '../app';
 
 import { debug } from 'debug';
+import mongoose from 'mongoose';
+import { MongoClient } from 'mongodb';
 import http from 'http';
 
 /**
@@ -17,6 +19,57 @@ debug('API:EFK:server::');
  * Get connection to DataBase
  */
 
+// NATIVE
+// const uri = `mongodb+srv://admongomin:perekyr4iK@dbsstore.ksx7a.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+// client.connect(err => {
+//   const collection = client.db("myFirstDatabase").collection("englishword_db");
+//   // perform actions on the collection object
+//   console.log(collection.find());
+//   client.close();
+// });
+
+
+// MONGOOSE
+const mongoDB = 'mongodb+srv://monomin:5ewMHtFIBPV1qs6i@azuremongodb.t8m5v.mongodb.net/englishwords_db?retryWrites=true&w=majority';
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.Promise = global.Promise;
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'MongoDB connection error.'));
+db.once('open', () => console.log('GOOD!'));
+
+const categorySchema = new mongoose.Schema({
+  caption: {type: String, require: true, unique: true},
+});
+
+const wordSchema = new mongoose.Schema({
+  word: String,
+  translation: String,
+  audioSrc: Buffer,
+  image: Buffer,
+  category: { type: mongoose.Schema.Types.ObjectId, ref: 'animals' }
+});
+
+const Category = mongoose.model('category', categorySchema);
+Category.createCollection();
+
+const Word = mongoose.model('word', wordSchema);
+Word.createCollection();
+
+// const animals = new Category({ caption: 'animals'});
+// Category.create({ caption: 'animals' }, (err, obj) => console.log(err, obj));
+
+const wordFrog = new Word({
+  word: 'frog',
+  translation: 'лягушка',
+  audioSrc: 'pathToMP3',
+  image: 'pathToImage',
+});
+wordFrog.save((err: mongoose.CallbackError) => console.log(err))
+
+const category = Category.find({ caption: 'animals', });
+console.log(category);
 // connectToDB();
 
 

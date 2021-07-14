@@ -42,7 +42,6 @@ baseRoute.get('/checkanswer', (req, res) => {
 });
 
 baseRoute.get('/train', (req, res) => {
-  console.log('trainBack');
   const { word, translation, image, audioSrc} = req.query;
   if (!statistic.has((word as string).toLowerCase())) {
     const card: ICard = {
