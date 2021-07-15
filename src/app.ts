@@ -1,12 +1,10 @@
 import express from 'express';
-import bodyParser from 'body-parser';
-import config from 'config';
+import handlebars from 'express-handlebars';
 import createError, { HttpError } from 'http-errors';
 import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
 
-import { pageRouter } from './routes/pageRoutes';
 import { baseRoute } from './routes/cardsroutes';
 import { dbRouter } from './routes/dbCategoryRoutes';
 
@@ -42,7 +40,9 @@ load();
 
 export const app = express();
 // view engine setup
-// app.set('views', path.join(__dirname, 'views'));
+app.engine('handlebars', handlebars({ defaultLayout: 'categories' }));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'handlebars')
 // app.set('view engine', 'jade');
 
 app.use(express.json());
@@ -69,7 +69,6 @@ app.use(cors());
 // ROUTES
 app.use(baseRoute);
 app.use(dbRouter);
-app.use(pageRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -5,7 +5,6 @@ import { app } from '../app';
 
 import { debug } from 'debug';
 import mongoose from 'mongoose';
-// import { MongoClient } from 'mongodb';
 import http from 'http';
 
 /**
@@ -107,7 +106,8 @@ function onError(error: { syscall: string; code: any; }) {
  * Event listener for HTTP server "listening" event.
  */
 function onListening() {
-  console.log('listen');
+  console.log(`Server started on port: ${port}`);
+  debug('API:EFK:server::');
   var addr = server.address();
   if (!addr) return;
   var bind = typeof addr === 'string'

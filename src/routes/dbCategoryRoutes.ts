@@ -1,4 +1,5 @@
 import Router from 'express';
+import { createWord } from '../db/dbServices';
 
 import { Category } from '../db';
 
@@ -7,7 +8,12 @@ const baseRoute = '/db/category';
 
 dbRouter.get(`${baseRoute}`, async (req, res) => {
   const response = await Category.find();
-  console.log(response);
+  res.json(response);
+});
+
+dbRouter.post(`${baseRoute}`, async (req, res) => {
+  const response = await Category.find();
+  console.log(req.body);
   res.json(response);
 });
 
@@ -40,6 +46,25 @@ dbRouter.delete(`${baseRoute}/delete/:categoryCaption`, async (req, res) => {
     };
   } catch (e) {
     res.sendStatus(500);
+  }
+});
+
+dbRouter.get(`${baseRoute}/addword`, async (req, res) => {
+  const { word, translation, audioSrc, image, category } = req.body;
+  const newWord = {
+    word,
+    translation,
+    audioSrc,
+    image,
+    category
+  }
+
+  const isCreated = await createWord(newWord);
+  
+  if (isCreated) {
+    res.sendStatus(201);
+  } else {
+    res.sendStatus(404);
   }
 });
 

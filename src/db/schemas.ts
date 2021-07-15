@@ -1,13 +1,13 @@
-import mongoose from 'mongoose';
+import { Schema } from 'mongoose';
 
-export const categorySchema = new mongoose.Schema({
-  caption: {type: String, require: true, unique: true},
+export const categorySchema = new Schema({
+  caption: { type: String, require: true },
 });
 
-export const wordSchema = new mongoose.Schema({
+export const wordSchema = new Schema({
   word: String,
   translation: String,
   audioSrc: Buffer,
   image: Buffer,
-  category: { type: mongoose.Schema.Types.ObjectId, ref: 'category' }
+  category: { type: Schema.Types.ObjectId, ref: 'category' }
 });
