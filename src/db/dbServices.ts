@@ -13,13 +13,33 @@ interface ICategoryObj {
   caption: string,
 }
 
-const createCategory = (categoryObj: ICategoryObj) => {
+export const getAllCategories = async (): Promise<Array<ICategoryObj>> => {
+  const query = await Category.find();
+ 
+  return query;
+}
+
+export const getCategoryByCaption = async (caption: string): Promise<ICategoryObj> => {
+  const query = await Category.findOne({ caption });
+
+  return query;
+}
+
+export const updateCategory = async (currentCategory: ICategoryObj, newCategoryCaption: string): Promise<boolean> => {
+  const { caption } = currentCategory;
+
+  const query = await Category.updateOne({ caption }, { caption: newCategoryCaption });
+
+  return query.nModified;
+}
+
+export const createCategory = async (categoryObj: ICategoryObj): Promise<void> => {
   const { caption } = categoryObj;
-  const category = new Category({
+  const category = await Category.create({
     caption
   });
 
-  return category.save();
+  return category;
 }
 
 export const createWord = async (wordObj: IWordObj) => {

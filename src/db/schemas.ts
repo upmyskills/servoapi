@@ -11,3 +11,12 @@ export const wordSchema = new Schema({
   image: Buffer,
   category: { type: Schema.Types.ObjectId, ref: 'category' }
 });
+
+export const wordInfoSchema = new Schema({
+  count: Number,
+  answers: {
+    wrong: Number,
+    correct: Number
+  },
+  category: { type: Schema.Types.ObjectId, ref: 'word' }
+});
