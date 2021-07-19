@@ -6,15 +6,17 @@ interface IWordObj {
   translation: string,
   audioSrc: string,
   image: string,
-  category: string
+  category?: string
 }
 
 interface ICategoryObj {
   caption: string,
 }
 
+//  category section
+
 export const getAllCategories = async (): Promise<Array<ICategoryObj>> => {
-  const query = await Category.find();
+  const query = await Category.find().sort([['caption', 1]]);
  
   return query;
 }
@@ -42,12 +44,17 @@ export const createCategory = async (categoryObj: ICategoryObj): Promise<void> =
   return category;
 }
 
+export const deleteCategory = async (categoryCaption: string): Promise<boolean> => {
+  const query = await Category.deleteOne({ caption: categoryCaption });
+  return query.deletedCount;
+}
+
 export const createWord = async (wordObj: IWordObj) => {
   const { word, translation, audioSrc, image, category } = wordObj;
   const categoryQuery = await Category.findOne({ caption: category });
 
   if (categoryQuery) {
-    const engWord = new Word({
+    const engWord = await Word.create({
       word,
       translation,
       audioSrc,
@@ -55,8 +62,35 @@ export const createWord = async (wordObj: IWordObj) => {
       category: categoryQuery
     });
 
-    return engWord.save();
+    console.log(engWord);
+
+    return engWord;
   }
 
   return null;
+}
+
+
+//  word section
+export const getAllWords = async (): Promise<Array<IWordObj>> => {
+  const query: Array<IWordObj> = Word.find().sort([['word', 1]]);
+  return query;
+}
+
+export const getOneWord = async (word: string): Promise<IWordObj> => {
+  const query : IWordObj = Word.findOne({ word });
+  return query;
+}
+
+export const updateWord = async (prev: IWordObj, newWord: IWordObj): Promise<boolean> => {
+  const { word } = prev;
+  const query = await Word.updateOne({ word }, newWord);
+
+  return query.nModified;
+}
+
+export const deleteWord = async (word: string): Promise<boolean> => {
+  const query = await Word.deleteOne({ word: word });
+
+  return query.deletedCount;
 }

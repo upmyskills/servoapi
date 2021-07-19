@@ -7,6 +7,7 @@ import fs from 'fs';
 
 import { baseRoute } from './routes/cardsroutes';
 import { dbCategoryRouter } from './routes/dbCategoryRoutes';
+import { dbWordRouter } from './routes/dbWordRoutes';
 
 import { ICard } from './models';
 import { statistic } from './shared/constants';
@@ -69,6 +70,7 @@ app.use(cors());
 // ROUTES
 app.use(baseRoute);
 app.use(dbCategoryRouter);
+app.use(dbWordRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

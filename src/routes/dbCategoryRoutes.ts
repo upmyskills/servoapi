@@ -1,5 +1,5 @@
 import Router from 'express';
-import { createWord, createCategory, getAllCategories, getCategoryByCaption, updateCategory } from '../db/dbServices';
+import { createWord, createCategory, getAllCategories, getCategoryByCaption, updateCategory, deleteCategory } from '../db/dbServices';
 
 import { Category } from '../db';
 
@@ -33,14 +33,14 @@ dbCategoryRouter.post(`${dbCategory}/create`, async (req, res) => {
   }
 });
 
-dbCategoryRouter.delete(`${dbCategory}/:categoryCaption/delete`, async (req, res) => {
+dbCategoryRouter.delete(`${dbCategory}/:categoryCaption`, async (req, res) => {
   const { categoryCaption } = req.params;
 
   try {
-    const query = await Category.deleteOne({ caption: categoryCaption });
-    // TODO: also we need to delete all cards with this category
+    const query = await deleteCategory(categoryCaption);
+    // TODO: also we need to delete all cards in this category
 
-    if (query.deletedCount) {
+    if (query) {
       res.sendStatus(200);
     } else {
       res.sendStatus(404);
@@ -50,20 +50,20 @@ dbCategoryRouter.delete(`${dbCategory}/:categoryCaption/delete`, async (req, res
   }
 });
 
-dbCategoryRouter.put(`${dbCategory}/:urlCategoryCaption/update`, async (req, res) => {
+dbCategoryRouter.put(`${dbCategory}/:urlCategoryCaption`, async (req, res) => {
   const { urlCategoryCaption } = req.params;
   const { newCategoryCaption } = req.body;
   const categoryCaption = urlCategoryCaption.replace(/_/g, ' ');
 
   const query = await getCategoryByCaption(categoryCaption);
-  const isEntryExist = await getCategoryByCaption(newCategoryCaption);
+  const isCategoryExist = await getCategoryByCaption(newCategoryCaption);
 
   if (!query || !newCategoryCaption) {
     res.sendStatus(404);
     return;
   };
 
-  if (isEntryExist) {
+  if (isCategoryExist) {
     res.status(404).json({ errorMessage: `${newCategoryCaption} already exist. Cho0se another caption please!` });
     return;
   }
@@ -83,8 +83,8 @@ dbCategoryRouter.put(`${dbCategory}/:urlCategoryCaption/update`, async (req, res
 
 });
 
-dbCategoryRouter.get(`${dbCategory}/:categoryCaption/addword`, async (req, res) => {
-  const { word, translation, audioSrc, image, category } = req.body;
+dbCategoryRouter.post(`${dbCategory}/:categoryCaption/addword`, async (req, res) => {
+  const { word, translation, audioSrc, image } = req.body;
   const { categoryCaption } = req.params;
 
   const newWord = {
@@ -92,15 +92,14 @@ dbCategoryRouter.get(`${dbCategory}/:categoryCaption/addword`, async (req, res) 
     translation,
     audioSrc,
     image,
-    category
+    category: categoryCaption
   }
 
-  const isCreated = await createWord(newWord);
-  
-  if (isCreated) {
+  try {
+    await createWord(newWord);
     res.sendStatus(201);
-  } else {
-    res.sendStatus(404);
+  } catch (e) {
+    res.status(404).json(`Can't create word in ${categoryCaption} category.`);
   }
 });
 
